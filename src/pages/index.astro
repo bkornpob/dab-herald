@@ -1,17 +1,62 @@
 ---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
 
+const digests = await getCollection('digests', ({ data }) => !data.draft);
+digests.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const latest = digests.slice(0, 3);
 ---
+<BaseLayout title="dab-herald — Guild Hall">
+  <h2 slot="meta">ai agent threat intelligence from the multiverse</h2>
+  <p style="font-size: 1.15rem; color: var(--fg-muted); max-width: 60ch;">
+    curated research from hub-1-dab-adventure-guild — sanitzed, cited, and shipped.
+    published by <a href="https://github.com/multiverselib-collectives">multiverselib-collectives</a>.
+  </p>
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+  <section style="margin-top: 3rem;">
+    <h3 style="font-size: 1.3rem; margin-bottom: 1rem;">latest digests</h3>
+    {latest.length > 0 ? (
+      <div style="display: grid; gap: 1rem;">
+        {latest.map((digest) => (
+          <a href={`/digests/${digest.id}/`} style="display: block; padding: 1.5rem; background: var(--card); border: 1px solid var(--border); border-radius: 8px; transition: border-color 0.2s;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 0.5rem;">
+              <h3 style="margin: 0; font-size: 1.15rem;">{digest.data.title}</h3>
+              <span class={`tag severity-${digest.data.severity}`}>{digest.data.severity}</span>
+            </div>
+            <p style="margin: 0 0 0.75rem; color: var(--fg-muted);">{digest.data.description}</p>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
+              <span style="color: var(--fg-muted); font-size: 0.8rem;">{digest.data.pubDate.toLocaleDateString()}</span>
+              {digest.data.tags.slice(0, 3).map(tag => <span class="tag">{tag}</span>)}
+            </div>
+          </a>
+        ))}
+      </div>
+    ) : (
+      <p style="color: var(--fg-muted);">No digests published yet. The first quest is inbound.</p>
+    )}
+    <p style="margin-top: 1.5rem;"><a href="/digests/">View all digests →</a></p>
+  </section>
+
+  <section style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border);">
+    <h3 style="font-size: 1.3rem; margin-bottom: 1rem;">about this guild</h3>
+    <p style="color: var(--fg-muted);">
+      dab-herald is the public-facing publication arm of the multiverselib collectives.
+      Research originates in <strong>hub-1-dab-adventure-guild</strong> (red-team &amp; vulnerability research)
+      and flows through a sanitization pipeline before publication here.
+    </p>
+    <ul style="color: var(--fg-muted); max-width: 60ch;">
+      <li><strong>cadence:</strong> weekly digests (Fri 12:00 UTC), biweekly newsletter</li>
+      <li><strong>channels:</strong> site, newsletter, X, LinkedIn, Bluesky, vendor syndication</li>
+      <li><strong>principles:</strong> TRUTH · LOVE · LIBERATION — no raw IOCs, no unpublished vuln details, all claims cited</li>
+    </ul>
+  </section>
+
+  <section style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border);">
+    <h3 style="font-size: 1.3rem; margin-bottom: 1rem;">subscribe</h3>
+    <form action="https://api.buttondown.email/v1/subscribers" method="POST" style="display: flex; gap: 0.75rem; max-width: 500px;">
+      <input type="email" name="email" placeholder="your@email.com" required style="flex: 1; padding: 0.75rem 1rem; background: var(--card); border: 1px solid var(--border); border-radius: 6px; color: var(--fg); font-family: inherit;" />
+      <button type="submit" style="padding: 0.75rem 1.5rem; background: var(--accent); color: #fff; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">Subscribe</button>
+    </form>
+    <p style="margin-top: 0.75rem; font-size: 0.85rem; color: var(--fg-muted);">Powered by Buttondown. No spam. Unsubscribe anytime.</p>
+  </section>
+</BaseLayout>

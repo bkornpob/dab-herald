@@ -1,0 +1,33 @@
+---
+import { getCollection } from 'astro:content';
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import type { CollectionEntry } from 'astro:content';
+
+type DigestEntry = CollectionEntry<'digests'>;
+
+export async function getStaticPaths() {
+  const digests = await getCollection('digests', ({ data }) => !data.draft);
+  return digests.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props as { entry: DigestEntry };
+const { Content, headings } = await render(entry);
+---
+<BaseLayout title={entry.data.title}>
+  <div slot="meta">
+    <span>{entry.data.pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+    <span>Quest {entry.data.questId}</span>
+    <span>By {entry.data.authors.join(', ')}</span>
+  </div>
+  <div slot="content" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem;">
+    {entry.data.tags.map(tag => <span class="tag">{tag}</span>)}
+    <span class={`tag severity-${entry.data.severity}`}>{entry.data.severity}</span>
+  </div>
+  <p style="font-size: 1.15rem; color: var(--fg-muted); margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 1.5rem;">{entry.data.description}</p>
+  <Content />
+  <nav style="margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between;">
+    <a href="/digests/">← All Digests</a>
+    <a href="/">Guild Hall →</a>
+  </nav>
+</BaseLayout>

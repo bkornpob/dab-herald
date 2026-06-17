@@ -1,0 +1,24 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const digests = await getCollection('digests', ({ data }) => !data.draft);
+digests.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+<BaseLayout title="Threat Digests">
+  <h2 slot="meta">published threat intelligence</h2>
+  <ul style="list-style: none; padding: 0;">
+    {digests.map((digest) => (
+      <li style="margin: 1.5rem 0; padding: 1.5rem; background: var(--card); border: 1px solid var(--border); border-radius: 8px;">
+        <h3 style="margin: 0 0 0.5rem;"><a href={`/digests/${digest.id}/`}>{digest.data.title}</a></h3>
+        <p style="margin: 0.5rem 0; color: var(--fg-muted);">{digest.data.description}</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
+          <span style="color: var(--fg-muted); font-size: 0.85rem;">{digest.data.pubDate.toLocaleDateString()}</span>
+          <span class={`tag severity-${digest.data.severity}`}>{digest.data.severity}</span>
+          {digest.data.tags.slice(0, 4).map(tag => <span class="tag">{tag}</span>)}
+          {digest.data.tags.length > 4 && <span class="tag">+{digest.data.tags.length - 4} more</span>}
+        </div>
+      </li>
+    ))}
+  </ul>
+</BaseLayout>
