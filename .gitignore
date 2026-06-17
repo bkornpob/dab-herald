@@ -1,6 +1,6 @@
 # build output
 dist/
-docs/
+# docs/  <- tracked for GitHub Pages pre-built deployment
 # generated types
 .astro/
 
