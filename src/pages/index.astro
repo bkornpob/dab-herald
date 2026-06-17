@@ -9,7 +9,7 @@ const latest = digests.slice(0, 3);
 <BaseLayout title="dab-herald — Guild Hall">
   <h2 slot="meta">ai agent threat intelligence from the multiverse</h2>
   <p style="font-size: 1.15rem; color: var(--fg-muted); max-width: 60ch;">
-    curated research from hub-1-dab-adventure-guild — sanitzed, cited, and shipped.
+    curated research from hub-1-dab-adventure-guild — sanitized, cited, and shipped.
     published by <a href="https://github.com/multiverselib-collectives">multiverselib-collectives</a>.
   </p>
 
@@ -18,7 +18,7 @@ const latest = digests.slice(0, 3);
     {latest.length > 0 ? (
       <div style="display: grid; gap: 1rem;">
         {latest.map((digest) => (
-          <a href={`/digests/${digest.id}/`} style="display: block; padding: 1.5rem; background: var(--card); border: 1px solid var(--border); border-radius: 8px; transition: border-color 0.2s;">
+          <a href={`${import.meta.env.BASE_URL}digests/${digest.id}/`} style="display: block; padding: 1.5rem; background: var(--card); border: 1px solid var(--border); border-radius: 8px; transition: border-color 0.2s;">
             <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 0.5rem;">
               <h3 style="margin: 0; font-size: 1.15rem;">{digest.data.title}</h3>
               <span class={`tag severity-${digest.data.severity}`}>{digest.data.severity}</span>
@@ -34,7 +34,7 @@ const latest = digests.slice(0, 3);
     ) : (
       <p style="color: var(--fg-muted);">No digests published yet. The first quest is inbound.</p>
     )}
-    <p style="margin-top: 1.5rem;"><a href="/digests/">View all digests →</a></p>
+    <p style="margin-top: 1.5rem;"><a href={`${import.meta.env.BASE_URL}digests/`}>View all digests →</a></p>
   </section>
 
   <section style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border);">
